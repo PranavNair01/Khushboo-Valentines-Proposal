@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display, Poppins } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 import "./globals.css";
+
+const playfair = Playfair_Display({subsets: ['latin'], variable: '--font-playfair'})
+const poppins = Poppins({subsets: ['latin'], variable: '--font-poppins', weight: ['300', '400', '500']}) 
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,15 +23,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {children: React.ReactNode}) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${playfair.variable} ${poppins.variable} bg-pink-50 text-gray-800`}>
+        <ThemeProvider attribute="class">
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
