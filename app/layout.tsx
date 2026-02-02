@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Playfair_Display, Poppins } from "next/font/google";
 import { ThemeProvider } from "next-themes";
+import MusicPlayer from "@/components/MusicPlayer";
 import "./globals.css";
 
 const playfair = Playfair_Display({subsets: ['latin'], variable: '--font-playfair'})
@@ -26,8 +27,9 @@ export default function RootLayout({
 }: {children: React.ReactNode}) {
   return (
     <html lang="en">
-      <body className={`${playfair.variable} ${poppins.variable} bg-pink-50 text-gray-800`}>
-        <ThemeProvider attribute="class">
+      <body className={`${playfair.variable} ${poppins.variable} bg-white text-gray-800 transition-colors duration-700`}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          <MusicPlayer />
           {children}
         </ThemeProvider>
       </body>

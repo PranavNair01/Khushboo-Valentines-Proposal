@@ -1,34 +1,66 @@
 'use client'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 import Confetti from 'react-confetti'
+import ThemeTransition from '@/components/ThemeTransition'
 
 export default function YesPage() {
   const { setTheme } = useTheme()
+  const [showOverlay, setShowOverlay] = useState(false)
+  const [showConfetti, setShowConfetti] = useState(true)
 
   useEffect(() => {
-    setTheme('dark')
-    saveYes()
-  }, [])
+    // 1️⃣ Fade to black
+    const t1 = setTimeout(() => setShowOverlay(true), 300)
 
-  const saveYes = async () => {
-    await fetch('/api/yes', { method: 'POST' })
-  }
+    // 2️⃣ Switch theme WHILE covered
+    const t2 = setTimeout(() => setTheme('dark'), 1100)
+
+    // 3️⃣ Reveal dark mode
+    const t3 = setTimeout(() => setShowOverlay(false), 1600)
+
+    // 4️⃣ Stop confetti
+    const t4 = setTimeout(() => setShowConfetti(false), 6000)
+
+    return () => {
+      clearTimeout(t1)
+      clearTimeout(t2)
+      clearTimeout(t3)
+      clearTimeout(t4)
+    }
+  }, [setTheme])
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center text-center">
-      <Confetti />
-      <div>
-        <h1 className="font-heading text-5xl">She said YES 💍</h1>
-        <p className="mt-4">This moment is saved forever.</p>
+    <>
+      <ThemeTransition show={showOverlay} />
 
-        <a
-          href="/api/certificate"
-          className="inline-block mt-8 bg-white text-black px-6 py-3 rounded-xl"
-        >
-          Download Certificate 📜
-        </a>
+      <div
+        className="
+          min-h-screen flex items-center justify-center text-center px-4
+          bg-white text-gray-800
+          dark:bg-black dark:text-white
+          transition-colors duration-700
+        "
+      >
+        {showConfetti && <Confetti numberOfPieces={300} gravity={0.15} />}
+
+        <div className="space-y-6">
+          <h1 className="font-heading text-5xl">
+            Khushboo said YES 💍
+          </h1>
+
+          <p className="opacity-80">
+            This moment is saved forever.
+          </p>
+
+          <a
+            href="/api/certificate"
+            className="inline-block bg-white text-black px-8 py-3 rounded-xl"
+          >
+            Download Certificate 📜
+          </a>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
