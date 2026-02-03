@@ -6,14 +6,16 @@ import { supabase } from '@/lib/supabaseServer'
 import { sendYesEmail } from '@/lib/sendEmail'
 import { sendYesWhatsapp } from '@/lib/sendWhatsapp'
 
-export async function POST() {
+export async function POST(request: Request) {
   const timestamp = format(new Date(), 'd MMMM yyyy, hh:mm a')
+  const body = await request.json()
+  const { response } = body
 
   // 1️⃣ Try inserting YES
   const { error } = await supabase
     .from('khushboo_response')
     .insert({
-      response: 'YES',
+      response: response,
     })
 
   // 2️⃣ If already exists → silently ignore
