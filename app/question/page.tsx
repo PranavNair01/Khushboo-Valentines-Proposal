@@ -5,61 +5,78 @@ import { useRef, useState } from 'react'
 export default function QuestionPage() {
   const router = useRouter()
   const firedRef = useRef(false)
+
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
   const [noBtnState, setNoBtnState] = useState({
     top: 'auto',
     left: 'auto',
-    position: 'static' as 'static' | 'fixed' // Start static, become fixed on hover
+    position: 'static' as 'static' | 'fixed'
   })
 
   const handleYes = (response: string) => {
     if (firedRef.current) return
     firedRef.current = true
 
-    // Fire backend (do not await)
     fetch('/api/yes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ response }),
     }).catch(() => {})
 
-    // Go to celebration page immediately
     router.push('/yes')
   }
 
   const moveNoButton = () => {
-    // Calculate random position within the window
-    // Subtracting button dimensions (approx) to keep it on screen
-    const x = Math.random() * (window.innerWidth - 150)
-    const y = Math.random() * (window.innerHeight - 100)
+    if (prefersReducedMotion) return
+
+    const padding = 20
+    const maxX = window.innerWidth - 160
+    const maxY = window.innerHeight - 100
+
+    const x = Math.max(
+      padding,
+      Math.random() * maxX
+    )
+    const y = Math.max(
+      padding,
+      Math.random() * maxY
+    )
 
     setNoBtnState({
       top: `${y}px`,
       left: `${x}px`,
-      position: 'fixed' // Switch to fixed so it can move anywhere
+      position: 'fixed'
     })
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center text-center">
-      <div className="space-y-8 relative">
-        
+    <div className="min-h-screen flex items-center justify-center text-center px-6">
+      <div className="space-y-10 relative">
+
         {/* Proposal Text */}
         <div className="space-y-6">
-          <h1 className="font-heading text-5xl md:text-6xl text-pink-500 font-bold drop-shadow-sm">
+          <h1 className="font-heading text-5xl md:text-6xl text-pink-500 font-bold">
             Hun, I love you.
           </h1>
-          
+
           <p className="text-2xl md:text-3xl font-medium text-gray-800 leading-relaxed">
-            Will you be my Valentine to <span className="text-pink-600 underline decoration-pink-400 decoration-wavy underline-offset-4">Jaipur</span> this year...
+            Will you be my Valentine to{' '}
+            <span className="text-pink-600 underline decoration-wavy underline-offset-4">
+              Jaipur
+            </span>{' '}
+            this year…
           </p>
 
           <p className="text-xl md:text-2xl text-gray-500 italic">
-            (...and every other year?)
+            (…and every other year?)
           </p>
         </div>
 
-        {/* Positive Buttons Row */}
-        <div className="flex flex-row gap-4 justify-center items-center">
+        {/* YES Buttons */}
+        <div className="flex flex-wrap gap-4 justify-center">
           <button
             onClick={() => handleYes('YES')}
             className="bg-pink-500 hover:bg-pink-600 text-white px-8 py-4 rounded-full text-xl transition-colors"
@@ -75,17 +92,18 @@ export default function QuestionPage() {
           </button>
         </div>
 
-        {/* The Runaway No Button */}
-        {/* We use a container to ensure the button starts on its own line */}
-        <div className="block">
+        {/* Runaway No */}
+        <div className="mt-4">
           <button
             onMouseEnter={moveNoButton}
-            onClick={moveNoButton} // For mobile touch support
+            onClick={moveNoButton}
             style={{
               position: noBtnState.position,
               top: noBtnState.top,
               left: noBtnState.left,
-              transition: 'top 0.2s, left 0.2s', // Smooth movement
+              transition: prefersReducedMotion
+                ? 'none'
+                : 'top 0.25s ease-out, left 0.25s ease-out',
             }}
             className="bg-gray-400 text-white px-8 py-2 rounded-full text-lg cursor-default"
           >

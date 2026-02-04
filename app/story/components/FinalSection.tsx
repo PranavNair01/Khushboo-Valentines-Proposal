@@ -2,7 +2,11 @@
 import { useRouter } from 'next/navigation'
 import FadeInOnScroll from './FadeInOnScroll'
 
-export default function FinalSection() {
+export default function FinalSection({
+    onContinue,
+}: {
+    onContinue: () => void
+}) {
     const router = useRouter()
 
     return (
@@ -20,7 +24,7 @@ export default function FinalSection() {
                     </p>
 
                     <button
-                        onClick={() => router.push('/question')}
+                        onClick={onContinue}
                         className="mt-8 px-10 py-4 rounded-full bg-pink-500 text-white"
                     >
                         Continue →

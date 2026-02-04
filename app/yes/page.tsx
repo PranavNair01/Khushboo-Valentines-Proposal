@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 import Confetti from 'react-confetti'
 import ThemeTransition from '@/components/ThemeTransition'
+import MusicPlayer from '@/components/MusicPlayer'
 
 export default function YesPage() {
   const { setTheme } = useTheme()
@@ -32,6 +33,7 @@ export default function YesPage() {
 
   return (
     <>
+      <MusicPlayer src='/valentines_music.mp3' autoPlay />
       <ThemeTransition show={showOverlay} />
 
       <div

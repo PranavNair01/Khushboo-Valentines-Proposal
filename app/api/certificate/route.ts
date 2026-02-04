@@ -17,7 +17,7 @@ export async function GET() {
   // 🕒 Timestamp
   const timestamp = format(new Date(), 'd MMMM yyyy, hh:mm a')
 
-  // 🌸 Load fonts via fetch (NO fs)
+  // 🌸 Load fonts (NO fs)
   const playfair = await loadFont(
     `${process.env.NEXT_PUBLIC_BASE_URL}/fonts/PlayfairDisplay-Regular.ttf`
   )
@@ -43,7 +43,7 @@ export async function GET() {
     doc.on('end', () => resolve(Buffer.concat(chunks)))
   })
 
-  // ✅ Register fonts from Buffers
+  // Register fonts
   doc.registerFont('Playfair', playfair)
   doc.registerFont('PlayfairBold', playfairBold)
   doc.registerFont('Poppins', poppins)
@@ -51,26 +51,56 @@ export async function GET() {
 
   /* ---------- DESIGN ---------- */
 
-  doc.rect(30, 30, 535, 782).lineWidth(2).stroke('#e5b3c8')
+  // Border
+  doc
+    .rect(30, 30, 535, 782)
+    .lineWidth(2)
+    .stroke('#e5b3c8')
 
   doc.moveDown(2)
 
+  // Title
   doc
     .font('PlayfairBold')
     .fontSize(36)
-    .text('She Said YES 💍', { align: 'center' })
+    .fillColor('#000')
+    .text('She Said YES', { align: 'center' })
 
-  doc.moveDown(2)
+  // 💍 Vector ring (emoji replacement)
+  const ringX = 297.5
+  const ringY = doc.y - 60
+
 
   doc
-    .font('Poppins')
-    .fontSize(16)
-    .text('This certifies that on', { align: 'center' })
+    .circle(ringX, ringY, 10)
+    .lineWidth(2)
+    .stroke('#e5b3c8')
+
+  doc
+    .circle(ringX, ringY, 4)
+    .fill('#e5b3c8')
 
   doc.moveDown(1)
 
   doc
+    .moveTo(220, doc.y)
+    .lineTo(375, doc.y)
+    .lineWidth(1)
+    .stroke('#e5b3c8')
+
+  doc.moveDown(2)
+
+
+  // Body
+  doc
     .font('Poppins')
+    .fontSize(16)
+    .fillColor('#000')
+    .text('This certifies that on', { align: 'center' })
+
+  doc.moveDown(0.5)
+
+  doc
     .fontSize(20)
     .text(timestamp, { align: 'center' })
 
@@ -78,24 +108,57 @@ export async function GET() {
 
   doc
     .font('Playfair')
-    .fontSize(18)
-    .text('Khushboo agreed to be my forever.', { align: 'center' })
+    .fontSize(20)
+    .text('Khushboo agreed to be my forever.', {
+      align: 'center',
+    })
+
+  doc.moveDown(2)
+
+  // Footer text
+  doc
+    .font('PoppinsItalic')
+    .fontSize(14)
+    .fillColor('#444')
+    .text('A moment chosen with love,', {
+      align: 'center',
+    })
+
+  // ❤️ Vector heart (emoji replacement)
+  const heartX = 297.5
+  doc.moveDown(1)
+  const heartY = doc.y
+
+
+  doc
+    .moveTo(heartX, heartY)
+    .bezierCurveTo(
+      heartX - 10, heartY - 10,
+      heartX - 22, heartY + 6,
+      heartX, heartY + 20
+    )
+    .bezierCurveTo(
+      heartX + 22, heartY + 6,
+      heartX + 10, heartY - 10,
+      heartX, heartY
+    )
+    .fill('#e2557a')
 
   doc.moveDown(2)
 
   doc
-    .font('PoppinsItalic')
     .fontSize(14)
-    .text(
-      'A moment chosen with love,\nand remembered for a lifetime ❤️',
-      { align: 'center' }
-    )
+    .fillColor('#444')
+    .text('remembered for a lifetime.', {
+      align: 'center',
+    })
 
   doc.moveDown(4)
 
   doc
     .font('PoppinsItalic')
     .fontSize(14)
+    .fillColor('#666')
     .text('— Always us', { align: 'center' })
 
   doc.end()
