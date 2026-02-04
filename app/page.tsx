@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-const TARGET_TIME = new Date('2026-02-01T08:30:00Z').getTime()
+const TARGET_TIME = new Date('2026-02-08T08:30:00Z').getTime()
 
 export default function Home() {
   const router = useRouter()
