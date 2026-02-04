@@ -33,7 +33,7 @@ export default function YesPage() {
 
   return (
     <>
-      <MusicPlayer src='/valentines_music.mp3' autoPlay />
+      <MusicPlayer src='/celebration_music.mp3' autoPlay />
       <ThemeTransition show={showOverlay} />
 
       <div
