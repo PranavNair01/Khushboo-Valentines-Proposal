@@ -1,13 +1,18 @@
 export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
-import { format } from 'date-fns'
+import { formatInTimeZone } from 'date-fns-tz'
 import { supabase } from '@/lib/supabaseServer'
 import { sendYesEmail } from '@/lib/sendEmail'
 import { sendYesWhatsapp } from '@/lib/sendWhatsapp'
 
 export async function POST(request: Request) {
-  const timestamp = format(new Date(), 'd MMMM yyyy, hh:mm a')
+  const timestamp = formatInTimeZone(
+    new Date(),
+    'Asia/Kolkata',
+    'd MMMM yyyy, hh:mm a'
+  )
+
   const body = await request.json()
   const { response } = body
 

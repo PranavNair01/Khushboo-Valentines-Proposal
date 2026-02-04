@@ -2,7 +2,8 @@ export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
 import PDFDocument from 'pdfkit/js/pdfkit.standalone'
-import { format } from 'date-fns'
+import { formatInTimeZone } from 'date-fns-tz'
+
 
 async function loadFont(url: string) {
   const res = await fetch(url)
@@ -15,7 +16,11 @@ async function loadFont(url: string) {
 
 export async function GET() {
   // 🕒 Timestamp
-  const timestamp = format(new Date(), 'd MMMM yyyy, hh:mm a')
+  const timestamp = formatInTimeZone(
+    new Date(),
+    'Asia/Kolkata',
+    'd MMMM yyyy, hh:mm a'
+  )
 
   // 🌸 Load fonts (NO fs)
   const playfair = await loadFont(
